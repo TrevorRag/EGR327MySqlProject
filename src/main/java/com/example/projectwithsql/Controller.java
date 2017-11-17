@@ -21,72 +21,64 @@ import java.util.*;
 @RestController
 public class Controller {
 
-    @Autowired //we will cover this later
-    private GreetingDAO greetingDao;
-
-    @RequestMapping(value = "/createGreeting", method = RequestMethod.POST)
-    public Greeting createGreeting(@RequestBody String name) throws IOException {
-        Greeting newGreeting = new Greeting(name);
-        greetingDao.create(newGreeting);
-        return newGreeting;
-    }
-
-    @RequestMapping(value = "/getGreeting/{id}", method = RequestMethod.GET)
-    public Greeting getGreeting(@PathVariable("id") int id) throws IOException {
-        return greetingDao.getById(id); }
+//    @Autowired //we will cover this later
+//    private GreetingDAO greetingDao;
+//
+//    @RequestMapping(value = "/createGreeting", method = RequestMethod.POST)
+//    public Greeting createGreeting(@RequestBody String name) throws IOException {
+//        Greeting newGreeting = new Greeting(name);
+//        greetingDao.create(newGreeting);
+//        return newGreeting;
+//    }
+//
+//    @RequestMapping(value = "/getGreeting/{id}", method = RequestMethod.GET)
+//    public Greeting getGreeting(@PathVariable("id") int id) throws IOException {
+//        return greetingDao.getById(id); }
 
     private static final String FILENAME = "./inventory.txt";
     private Stack<Vehicle> latest = new Stack<Vehicle>();
 
+    @Autowired
+    private VehicleDAO vehicleDAO;
 
-//    @RequestMapping(value = "/addVehicle", method = RequestMethod.POST)
-//    public Vehicle addVehicle(@RequestBody Vehicle newVehicle)throws IOException{
-//        ObjectMapper mapper  = new ObjectMapper();
-//        FileWriter output = new FileWriter(FILENAME,true);
-//        mapper.writeValue(output, newVehicle);
-//        FileUtils.writeStringToFile(new File(FILENAME),System.lineSeparator(),true);
-//        latest.push(newVehicle);
-//        return newVehicle;
-//    }
-//
-//    @RequestMapping(value = "/getVehicle/{id}", method = RequestMethod.GET)
-//    public Vehicle getVehicle(@PathVariable("id") int id)throws IOException{
-//        return scanFile(FILENAME, id);
-//    }
-//
-//    @RequestMapping(value = "/updateVehicle", method = RequestMethod.PUT)
-//    public Vehicle updateVehicle(@RequestBody Vehicle newVehicle) throws IOException{
-//        ObjectMapper mapper = new ObjectMapper();
-//        File file = new File(FILENAME);
-//        FileWriter output = new FileWriter(file,true);
-//        if(removeLine(file,newVehicle.getId())){
-//            mapper.writeValue(output, newVehicle);
-//            FileUtils.writeStringToFile(file,System.lineSeparator(),true);
-//            return newVehicle;
-//        }else{
-//            return null;
-//        }
-//    }
-//
-//    @RequestMapping(value = "/deleteVehicle/{id}", method = RequestMethod.DELETE)
-//    public ResponseEntity<String> deleteVehicle(@PathVariable("id") int id)throws IOException{
-//        File file = new File(FILENAME);
-//        if(removeLine(file,id)){
-//            return new ResponseEntity<String>("Deleted", HttpStatus.OK);
-//        }else {
-//            return new ResponseEntity<String>("Not Found", HttpStatus.NOT_FOUND);
-//        }
-//    }
-//
-//    @RequestMapping(value = "/getLatestVehicles", method = RequestMethod.GET)
-//    public List<Vehicle> getLatestVehicles()throws IOException{
-//        List<Vehicle> list = new ArrayList<>(10);
-//        for(int i = 0; i <10; i++){
-//            list.add(i,latest.pop());
-//        }
-//        Collections.reverse(list);
-//        return list;
-//    }
+    @RequestMapping(value = "/addVehicle", method = RequestMethod.POST)
+    public Vehicle addVehicle(@RequestBody Vehicle newVehicle)throws IOException{
+        vehicleDAO.create(newVehicle);
+        latest.push(newVehicle);
+        return newVehicle;
+    }
+
+    @RequestMapping(value = "/getVehicle/{id}", method = RequestMethod.GET)
+    public Vehicle getVehicle(@PathVariable("id") int id)throws IOException{
+        return vehicleDAO.getById(id);
+    }
+
+    @RequestMapping(value = "/updateVehicle", method = RequestMethod.PUT)
+    public Vehicle updateVehicle(@RequestBody Vehicle newVehicle) throws IOException{
+        vehicleDAO.update(newVehicle);
+        return newVehicle;
+    }
+
+    @RequestMapping(value = "/deleteVehicle/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteVehicle(@PathVariable("id") int id)throws IOException{
+
+        if(vehicleDAO.getById(id) != null){
+            vehicleDAO.delete(vehicleDAO.getById(id));
+            return new ResponseEntity<String>("Deleted", HttpStatus.OK);
+        }else {
+            return new ResponseEntity<String>("Not Found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(value = "/getLatestVehicles", method = RequestMethod.GET)
+    public List<Vehicle> getLatestVehicles()throws IOException{
+        List<Vehicle> list = new ArrayList<>(10);
+        for(int i = 0; i <10; i++){
+            list.add(i,latest.pop());
+        }
+        Collections.reverse(list);
+        return list;
+    }
 
 
 

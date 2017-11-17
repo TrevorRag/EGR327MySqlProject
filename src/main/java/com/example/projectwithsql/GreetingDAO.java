@@ -28,4 +28,8 @@ public class GreetingDAO {
     public Greeting getById(int id) {
         return entityManager.find(Greeting.class, id);
     }
+
+
+
+
 }

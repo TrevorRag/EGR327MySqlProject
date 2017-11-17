@@ -1,9 +1,15 @@
 package com.example.projectwithsql;
 
-import java.io.Serializable;
+import javax.persistence.*;
 
-public class Vehicle implements Serializable {
+@Entity
+@Table(name = "vehicles")
+public class Vehicle {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
     private String makeModel;
     private int year;
     private double retailPrice;
