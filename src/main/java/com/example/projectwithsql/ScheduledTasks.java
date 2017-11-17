@@ -33,9 +33,9 @@ public class ScheduledTasks {
         Map<String, String> params = new HashMap<>();
         params.put("id", Integer.toString(random.nextInt(50)));
         if(!restTemplate.getForEntity(url1,Vehicle.class,params).getClass().equals(Vehicle.class)){
-            System.out.println("*********ERROR: greeting not found**********");
+            System.out.println("*********ERROR: vehicle not found**********");
         }else{
-            System.out.println(restTemplate.getForEntity(url1,Greeting.class,params));
+            System.out.println("Deleting...");
             restTemplate.delete(url2,params);
         }
 
